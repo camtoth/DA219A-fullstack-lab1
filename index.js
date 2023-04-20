@@ -16,7 +16,7 @@ mongoose.set("strictQuery", false);
 const mongodbURI = process.env.CONNECTIONSTRING
 mongoose.connect(mongodbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(()=>console.log('MongoDB and Mongoose connected!'))
-.catch(error =>console.error('Error in connection!',error))
+.catch(error =>console.error("ERROR: couldn't establish connection!", error))
 
 app.listen(process.env.PORT, () => {
     console.log("Listening on port: " + process.env.PORT);
@@ -37,7 +37,7 @@ app.get('/albums', async(req,res)=>{
             albums,
         )
     } catch (error) {
-        res.status(500).json({message: "error in fetching albums"})
+        res.status(500).json({message: "ERROR: couldn't fetch albums"})
     }
 })
 
@@ -47,9 +47,9 @@ app.get('/albums/:title', async(req,res)=> {
         if (album.length > 0)
             res.status(201).json(album)
         else 
-            res.status(404).json({message: "The album with the provided title is not found"})
+            res.status(404).json({message: "ERROR: couldn't find album with this title"})
     } catch (error) {
-        res.status(500).json({message: "error in fetching album"})
+        res.status(500).json({message: "ERROR: couldn't fetch album"})
     }
 })
 
@@ -72,6 +72,6 @@ app.post('/album', async(req,res)=>{
         const album = await newAlbum.save()
         res.json(album)
     } catch (error) {
-        res.status(500).json({message: "error in saving new album"})
+        res.status(500).json({message: "ERROR: couldn't save new album"})
     }
 })
