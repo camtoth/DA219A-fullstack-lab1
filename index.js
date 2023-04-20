@@ -3,6 +3,7 @@ const app = express()
 const bodyPaser= require('body-parser')
 const dotenv = require('dotenv').config()
 const mongoose = require("mongoose");
+const Album = require('./src/Album')
 
 // express setup
 app.use(express.json())
