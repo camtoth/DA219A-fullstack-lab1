@@ -68,9 +68,15 @@ app.post('/album', async(req,res)=>{
         artist:artist,
         year:year
     })
+
     try {
-        const album = await newAlbum.save()
-        res.json(album)
+        const album = await Album.find({title: req.body.title, artist:req.body.artist})
+        if (album?.length > 0){
+            res.status(409).json({message: "ERROR: album already exists"})
+        } else {
+            const createdAlbum = await newAlbum.save()
+            res.status(201).json(createdAlbum)
+            }
     } catch (error) {
         res.status(500).json({message: "ERROR: couldn't save new album"})
     }
