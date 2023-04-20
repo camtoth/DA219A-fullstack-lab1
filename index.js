@@ -33,10 +33,45 @@ app.get('/albums', async(req,res)=>{
 
         const count= await Album.count()
 
-        res.json({
-            data:albums,
-        })
+        res.json(
+            albums,
+        )
     } catch (error) {
-        res.status(500).json({messege: "error in getting customers"})
+        res.status(500).json({message: "error in fetching albums"})
+    }
+})
+
+app.get('/albums/:title', async(req,res)=> {
+    try {
+        const album = await Album.find({title: req.params.title})
+        if (album.length > 0)
+            res.status(201).json(album)
+        else 
+            res.status(404).json({message: "The album with the provided title is not found"})
+    } catch (error) {
+        res.status(500).json({message: "error in fetching album"})
+    }
+})
+
+
+app.post('/album', async(req,res)=>{
+    const title= req.body.title
+    const artist = req.body.artist
+    const year = req.body.year
+
+    if (!title || !artist || !year){
+        res.status(400).json({message: "ERROR: please specify album title, artist and year"})
+    }
+
+    const newAlbum= new Album({
+        title:title,
+        artist:artist,
+        year:year
+    })
+    try {
+        const album = await newAlbum.save()
+        res.json(album)
+    } catch (error) {
+        res.status(500).json({message: "error in saving new album"})
     }
 })
