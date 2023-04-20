@@ -1,1 +1,25 @@
-<h1>Hello</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🎶 Cameron's album database</title>
+  <!--from https://css-tricks.com/emoji-as-a-favicon/-->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💿</text></svg>">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    body { padding-top: 50px; }
+  </style>
+</head>
+
+<body>
+  <div>
+    <h1>🎵🎶💿Welcome to Cameron's album database 💿🎶🎵</h1><br>
+    <h3><a href="/albums">Click here to see all the albums in the database!</a></h3><br>
+    <p>
+      <h5><b>To look up a specific album: /albums/</b><i>Album Title</i></h5><br>
+      <h5><b>To add an album to the database: POST /album</b> specify title, artist, and year of release in the request body</h5>
+    </p>
+  </div>
+
+</body>
+</html>
