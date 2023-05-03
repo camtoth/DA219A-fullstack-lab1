@@ -95,3 +95,30 @@ app.delete('/albums/:id', async(req,res)=> {
         res.status(500).json({message: "ERROR: couldn't delete album"})
     }
 })
+
+app.put('/albums/:id', async(req,res)=>{
+    const newTitle = req.body.newTitle
+    const newArtist = req.body.newArtist
+    const newYear = req.body.newYear
+    
+
+    if (!newTitle || !newArtist || !newYear){
+        res.status(400).json({message: "ERROR: please specify album title, artist and year"})
+    }
+
+    try {
+        const albumToUpdate = await Album.findOne({_id: req.params.id})
+        console.log(albumToUpdate)
+        if (!albumToUpdate){
+            res.status(404).json({message: "ERROR: album not found"})
+        } else {
+            albumToUpdate.title = newTitle
+            albumToUpdate.artist = newArtist
+            albumToUpdate.year = newYear
+            await albumToUpdate.save()
+            res.status(201).json("Album updates successfully!")
+        }
+    } catch (error) {
+        //res.status(500).json({message: "ERROR: couldn't update album"})
+    }
+})
