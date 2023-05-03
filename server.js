@@ -81,3 +81,17 @@ app.post('/album', async(req,res)=>{
         res.status(500).json({message: "ERROR: couldn't save new album"})
     }
 })
+
+app.delete('/albums/:id', async(req,res)=> {
+    try {
+        const albumToDelete = await Album.findOne({_id: req.params.id})
+        if (albumToDelete){
+            result = await Album.deleteOne({_id: albumToDelete._id})
+            res.status(201).json("Album deleted!")
+        }
+        else 
+            res.status(404).json({message: "ERROR: couldn't find album with this id"})
+    } catch (error) {
+        res.status(500).json({message: "ERROR: couldn't delete album"})
+    }
+})
