@@ -8,14 +8,28 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <style>
     body { padding-top: 50px; }
+    table, th, td {
+      border: 1px solid black;
+    }
   </style>
 </head>
 
 <body>
   <div>
     <h1>🎵🎶💿Welcome to Cameron's album database 💿🎶🎵</h1><br>
-    <h3><a href="/albums">Click here to see all the albums in the database!</a></h3><br>
+    <h3>Here are all the albums in the database!</h3><br>
+    <table id="js-albums-table"></table>
     <p>
+      <form onsubmit="addNewAlbum()">
+        <label for="artist">Artist</label>
+        <input type="text" id="artist" value="">
+        <label for="title">Title</label>
+        <input type="text" id="title" value= "">
+        <label for="year">Year</label>
+        <input type="text" id="year" value= "">
+        <input type="submit" value="Submit">
+      </form>
+
       <h5><b>To look up a specific album: /albums/</b><i>Album Title</i></h5><br>
       <h5><b>To add an album to the database: POST /album</b> specify title, artist, and year of release in the request body</h5>
     </p>
@@ -23,3 +37,84 @@
 
 </body>
 </html>
+
+<script>
+  function renderAlbums() {
+    fetch("http://localhost:3000/albums")
+      .then(response => response.json())
+      .then(albums => {
+        let htmlToDisplay = `<tr>
+            <th><b>Artist</b></th>
+            <th><b>Title</b></th>
+            <th><b>Year</b></th>
+          </tr>`;
+        albums.forEach(album => {
+          htmlToDisplay += 
+          `<tr>
+            <th hidden><input type="text" id="${album._id}artist" value="${album.artist}"></th>
+            <th><input type="text" id="${album._id}title" value= "${album.title}"></th>
+            <th hidden><input type="text" id="${album._id}year" value= "${album.year}"></th>
+            <th><button value=${album._id} onclick="deleteAlbum(this.value)">Delete</button></th>
+            <th><button value=${album._id} onclick="updateAlbum(this.value)">Update</button></th>
+            <th><button value=${album._id} onclick="showDetails(this.value)">Show details</button></th>
+          </tr>`
+        });
+        document.getElementById("js-albums-table").innerHTML = htmlToDisplay;
+      }).catch(error => { console.error("Error fetching albums:", error);});
+  }
+
+  function deleteAlbum(id) {
+    fetch(`http://localhost:3000/albums/${id}`, {
+      method: 'DELETE'
+    }).then(response => {
+      renderAlbums()
+      response.json()
+    })
+    .catch(error => { console.error("Error deleting album:", error);});
+  }
+
+  function updateAlbum(id) {
+    let newArtist = document.getElementById(`${id}artist`).value
+    let newTitle = document.getElementById(`${id}title`).value
+    let newYear = document.getElementById(`${id}year`).value
+
+    fetch(`http://localhost:3000/albums/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({newArtist: newArtist, newTitle: newTitle, newYear: newYear})
+    }).then(response => {
+      renderAlbums()
+      response.json()
+    }).catch(error => { console.error("Error deleting album:", error);});
+    renderAlbums()
+  }
+
+  function showDetails(id) {
+    let artistCell = document.getElementById(`${id}artist`)
+    let yearCell = document.getElementById(`${id}year`)
+    artistCell.parentNode.hidden = false
+    yearCell.parentNode.hidden = false
+  }
+  
+  function addNewAlbum() {
+    let artist = document.getElementById('artist').value
+    let title = document.getElementById('title').value
+    let year = document.getElementById('year').value
+
+    fetch(`http://localhost:3000/album`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({artist: artist, title: title, year: year})
+    }).then(response => {
+      renderAlbums()
+      response.json()
+    }).catch(error => { console.error("Error deleting album:", error);});
+  }
+
+  renderAlbums()
+</script>
+  
